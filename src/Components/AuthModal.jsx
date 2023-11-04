@@ -1,5 +1,7 @@
 import { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
+import { useCookies } from 'react-cookie'
+import axios from 'axios'
 
 
 const AuthModal = ({ setShowModal,  isSignUp }) => {
@@ -7,6 +9,9 @@ const AuthModal = ({ setShowModal,  isSignUp }) => {
     const [password, setPassword] = useState(null)
     const [confirmPassword, setConfirmPassword] = useState(null)
     const [error, setError] = useState(null)
+    const [data, setData] = useState(null)
+    const [cookies, setCookies] = useCookies(null)
+    const [statusCode, setStatusCode] = useState(null)
 
     let navigate = useNavigate()
 
@@ -26,9 +31,24 @@ const AuthModal = ({ setShowModal,  isSignUp }) => {
                 return
             }
 
-            
+            axios.post(`http://localhost:3500/api/v1/${isSignUp ? 'signup' : 'login'}`, {email, password})
+            .then( response => {
+                setData(response.data) 
+                setStatusCode(response.status)
+            })
+            .catch(error => setError(error))
+            console.log(error)
 
-        } catch (error) {
+            setCookies('AuthToken',data.token)
+            setCookies('UserId', data.user_id)
+            
+            if(statusCode === 201 && isSignUp) navigate('/onboarding')
+            if(statusCode === 201 && !isSignUp) navigate('/dashboard')
+
+            window.location.reload()
+
+        } 
+        catch (error) {
             console.log(error)
         }
 
@@ -49,6 +69,7 @@ const AuthModal = ({ setShowModal,  isSignUp }) => {
                     required={true}
                     onChange={(e) => setEmail(e.target.value)}
                 />
+
                 <input
                     type="password"
                     id="password"
@@ -57,6 +78,7 @@ const AuthModal = ({ setShowModal,  isSignUp }) => {
                     required={true}
                     onChange={(e) => setPassword(e.target.value)}
                 />
+
                 {isSignUp && <input
                     type="password"
                     id="password-check"
