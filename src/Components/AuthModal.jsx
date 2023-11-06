@@ -33,11 +33,19 @@ const AuthModal = ({ setShowModal,  isSignUp }) => {
 
             axios.post(`http://localhost:3500/api/v1/${isSignUp ? 'signup' : 'login'}`, {email, password})
             .then( response => {
-                setData(response.data)
+                setData(response.data) 
+                setStatusCode(response.status)
+                console.log(data)
             })
             .catch(error => setError(error))
             console.log(error)
+            setCookies('AuthToken',data.token)
+            setCookies('UserId', data.user_id)
+            
+            if(statusCode === 201 && isSignUp) navigate('/onboarding')
+            if(statusCode === 201 && !isSignUp) navigate('/dashboard')
 
+            window.location.reload()
             
 
         } 
