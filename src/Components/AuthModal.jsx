@@ -31,7 +31,7 @@ const AuthModal = ({ setShowModal,  isSignUp }) => {
                 return
             }
 
-            axios.post(`http://localhost:3500/api/v1/${isSignUp ? 'signup' : 'login'}`, {email, password})
+            axios.post(`https://vercel.com/thiruthanikaiarasu/code-sync-server/api/v1/${isSignUp ? 'signup' : 'login'}`, {email, password})
             .then( response => {
                 setData(response.data) 
                 setStatusCode(response.status)
