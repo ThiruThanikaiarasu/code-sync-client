@@ -22,8 +22,18 @@ const AuthModal = ({ setShowModal,  isSignUp }) => {
         setShowModal(false)
     }
 
+    const handlePasswordChange = (event) => {
+        setPassword(event.target.value)
+    }
+
     const handleSubmit = async (e) => {
         e.preventDefault()
+
+        const isValidPassword = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,16}$/.test(password);
+
+        if (!isValidPassword) {
+        alert("Password must have one uppercase letter, one lowercase letter, one number, one special character, and be between 8 and 16 characters long.");
+        }
 
         try {
             if (isSignUp && (password !== confirmPassword)) {
@@ -76,8 +86,9 @@ const AuthModal = ({ setShowModal,  isSignUp }) => {
                     id="password"
                     name="password"
                     placeholder="password"
+                    value={password}
                     required={true}
-                    onChange={(e) => setPassword(e.target.value)}
+                    onChange={handlePasswordChange}
                 />
 
                 {isSignUp && <input
